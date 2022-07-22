@@ -14,6 +14,67 @@ Features:
 * pytest: examples of tests, fixtures and factories
 * typer for commands
 
+## Handler example
+
+./app/notes/handlers
+```python
+router = APIRouter(prefix="/notes", tags=["notes"])
+
+@router.post(path="", response_model=Note)
+def create_note(note: NoteCreate) -> Note:
+
+    with db.begin():
+        _note = services.create_note(note)
+
+    return _note
+```
+
+./app/notes/services.py
+```python
+def create_note(note: NoteCreate) -> Note:
+    """Save note into database"""
+
+    logger.info("Creating new note", extra={"note": note.dict()})
+
+    _note = db.insert_note(note)
+    return _note
+```
+
+./app/notes/db.py
+```python
+def insert_note(note: m.NoteCreate) -> m.Note:
+    row = db.select_one(
+        sa.insert(t.Note)
+        .values(
+            title=note.title,
+            text=note.text,
+            tags=note.tags,
+        )
+        .returning(t.Note)
+    )
+    return m.Note.from_orm(row)
+```
+
+./app/notes/models.py
+```python
+class NoteBase(BaseModel):
+    title: str
+    text: str
+    tags: list[str] = Field(default_factory=list)
+
+
+class NoteCreate(NoteBase):
+    ...
+
+
+class Note(NoteBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+```
+
 ## Project structure
 ```
 ├── app
