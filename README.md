@@ -14,6 +14,60 @@ Features:
 * pytest: examples of tests, fixtures and factories
 * typer for commands
 
+## Project structure
+```
+├── app
+│   ├── commands
+│   │   └── __main__.py
+│   ├── health
+│   │   ├── __init__.py
+│   │   └── handlers.py
+│   ├── migrations
+│   │   ├── versions
+│   │   │   └── 2022-07-21_add_notes_table_1c9c682bb2ed.py
+│   │   ├── README
+│   │   ├── env.py
+│   │   └── script.py.mako
+│   ├── notes
+│   │   ├── __init__.py
+│   │   ├── db.py
+│   │   ├── handlers.py
+│   │   ├── models.py
+│   │   ├── services.py
+│   │   └── tables.py
+│   ├── __init__.py
+│   ├── config.py
+│   ├── db.py
+│   ├── error_reporting.py
+│   ├── errors.py
+│   ├── main.py
+│   ├── setup.py
+│   ├── types.py
+│   └── utils.py
+├── scripts
+│   ├── init.sh
+│   ├── lint-check.sh
+│   ├── lint.sh
+│   ├── start.dev.sh
+│   ├── start.sh
+│   ├── test.sh
+│   └── upgrade-db.sh
+├── tests
+│   ├── notes
+│   │   ├── __init__.py
+│   │   ├── factories.py
+│   │   └── test_notes_handlers.py
+│   ├── __init__.py
+│   └── conftest.py
+├── Dockerfile
+├── LICENSE
+├── README.md
+├── alembic.ini
+├── docker-compose.yaml
+├── poetry.lock
+└── pyproject.toml
+```
+
 ## Run project
 
 Use docker-compose:
