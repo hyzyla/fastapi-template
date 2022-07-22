@@ -1,0 +1,56 @@
+[tool.poetry]
+name = "fastapi-template"
+version = "0.1.0"
+description = ""
+authors = ["Yevhenii Hyzyla <hyzyla@gmail.com>"]
+readme = "README.md"
+packages = [{include = "app"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pydantic = "^1.9.1"
+typer = "^0.6.1"
+fastapi = "^0.79.0"
+sentry-sdk = "^1.8.0"
+SQLAlchemy = "^1.4.39"
+uvicorn = "^0.18.2"
+psycopg2-binary = "^2.9.3"
+wait-for-it = "^2.2.1"
+
+
+[tool.poetry.dev-dependencies]
+mypy = "^0.971"
+black = "^22.6.0"
+flake8 = "^4.0.1"
+pytest = "^7.1.2"
+isort = "^5.10.1"
+alembic = "^1.8.1"
+flake8-print = "^5.0.0"
+dirty-equals = "^0.4"
+pydantic-factories = "^1.4.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+# ===================
+# Tools configuration
+[tool.black]
+line-length = 88
+target-version = ['py310']
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+exclude = 'app/migrations'
+strict = true
+# disable few strict flags
+ignore_missing_imports = true
+disallow_subclassing_any = false
+warn_return_any = false
+
+# disable mypy for a test at all
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+ignore_errors = true

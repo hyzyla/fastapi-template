@@ -1,0 +1,75 @@
+version: "3.9"
+
+
+services:
+
+  _base: &base
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: []
+    volumes:
+      - .:/code
+    environment: &base-environment
+      ENVIRONMENT: dev
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/dev
+
+  app: &app
+    <<: *base
+    ports:
+      - "8009:8009"
+    entrypoint: ["scripts/start.dev.sh"]
+    depends_on:
+      - db
+
+  db:
+    image: postgres:11-alpine
+    ports:
+      - "5432:5432"
+    environment: &db-environment
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: dev
+      POSTGRES_PORT: 5432
+    volumes:
+      # persist database data between restarts
+      - pgdata:/var/lib/postgresql/data
+
+  # Tests
+  test: &test
+    <<: *base
+    environment:
+      <<: *base-environment
+      DATABASE_URL: postgresql://postgres:postgres@db-test:5432/dev
+    entrypoint: ["scripts/test.sh"]
+    depends_on:
+      - db-test
+
+  db-test:
+    image: postgres:11-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      <<: *db-environment
+
+  # Tools
+  lint:
+    <<: *base
+    entrypoint: ["scripts/lint.sh"]
+
+  alembic:
+    <<: *base
+    entrypoint: [ "alembic" ]
+
+    depends_on:
+      - db
+
+  alembic-autogenerate:
+    <<: *base
+    entrypoint: [ "alembic", "revision", "--autogenerate", "-m" ]
+    depends_on:
+      - db
+
+
+volumes:
+  pgdata:
